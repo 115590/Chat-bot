@@ -1,0 +1,188 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar for chat messages for better aesthetics */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Import Inter font from Google Fonts for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl flex flex-col h-[90vh] overflow-hidden">
+        <div class="bg-indigo-600 text-white p-4 rounded-t-2xl shadow-md flex justify-between items-center">
+            <h1 class="text-2xl font-bold">AI Chatbot</h1>
+            <span class="text-sm font-medium">AI chat bot made by AKRAM KHAN</span>
+        </div>
+
+        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4 chat-messages">
+            <div class="flex justify-start">
+                <div class="bg-gray-200 text-gray-800 p-3 rounded-xl max-w-[80%] shadow-sm">
+                    Hello! How can I help you today?
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-gray-200 bg-gray-50 flex items-center gap-3">
+            <input
+                type="text"
+                id="user-input"
+                placeholder="Type your message..."
+                class="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200"
+            />
+            <button
+                id="send-button"
+                class="bg-indigo-600 text-white p-3 rounded-xl shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200 flex items-center justify-center"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Get references to the chat messages container, user input field, and send button
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        // Function to scroll the chat messages to the very bottom
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Function to add a new message bubble to the chat display
+        function addMessage(sender, message) {
+            const messageDiv = document.createElement('div');
+            // Apply flex classes to align messages based on sender (user on right, bot on left)
+            messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start');
+
+            const messageBubble = document.createElement('div');
+            // Apply styling for message bubbles, different colors for user and bot
+            messageBubble.classList.add(
+                'p-3',
+                'rounded-xl',
+                'max-w-[80%]', // Limit message width for readability
+                'shadow-sm',
+                sender === 'user' ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'
+            );
+            messageBubble.textContent = message; // Set the message text
+            messageDiv.appendChild(messageBubble); // Add the bubble to the message div
+            chatMessages.appendChild(messageDiv); // Add the message div to the chat container
+            scrollToBottom(); // Scroll to the latest message
+        }
+
+        // Function to show a "Bot is typing..." indicator
+        function showBotTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'bot-typing-indicator'; // Assign an ID to easily remove it later
+            typingDiv.classList.add('flex', 'justify-start');
+            typingDiv.innerHTML = `
+                <div class="bg-gray-200 text-gray-800 p-3 rounded-xl max-w-[80%] shadow-sm animate-pulse">
+                    Bot is typing...
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv); // Add the typing indicator to the chat
+            scrollToBottom(); // Scroll to show the indicator
+        }
+
+        // Function to hide the "Bot is typing..." indicator
+        function hideBotTyping() {
+            const typingDiv = document.getElementById('bot-typing-indicator');
+            if (typingDiv) {
+                typingDiv.remove(); // Remove the typing indicator from the DOM
+            }
+        }
+
+        // Function to get a response from the chatbot
+        async function getBotResponse(userMessage) {
+            showBotTyping(); // Show typing indicator while waiting for response
+
+            // Prepare the chat history for the API call
+            // For this simplified example, we only send the current user message.
+            // In a full implementation, you'd maintain a history of past turns.
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+
+            // Define the payload for the Gemini API request
+            const payload = { contents: chatHistory };
+            // API key is left empty; Canvas will inject it at runtime for allowed models.
+            const apiKey = "";
+            // The API endpoint for Gemini 2.0 Flash model
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                // Make a POST request to the Gemini API
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                // Parse the JSON response
+                const result = await response.json();
+
+                // Check if the response contains valid content
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const botResponseText = result.candidates[0].content.parts[0].text;
+                    hideBotTyping(); // Hide typing indicator
+                    addMessage('bot', botResponseText); // Display bot's response
+                } else {
+                    // Handle cases where the response structure is unexpected or content is missing
+                    hideBotTyping();
+                    addMessage('bot', "I'm sorry, I couldn't generate a response. Please try again.");
+                    console.error('Unexpected API response structure:', result);
+                }
+            } catch (error) {
+                // Handle network errors or other exceptions
+                hideBotTyping();
+                addMessage('bot', "An error occurred while connecting to the AI. Please try again.");
+                console.error('Error fetching bot response:', error);
+            }
+        }
+
+        // Event listener for the send button click
+        sendButton.addEventListener('click', () => {
+            const message = userInput.value.trim(); // Get user input and remove leading/trailing whitespace
+            if (message) { // Only send if the message is not empty
+                addMessage('user', message); // Display user's message
+                getBotResponse(message); // Get bot's response
+                userInput.value = ''; // Clear the input field after sending
+            }
+        });
+
+        // Event listener for the Enter key press in the input field
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') { // If the pressed key is 'Enter'
+                sendButton.click(); // Programmatically click the send button
+            }
+        });
+
+        // Initial scroll to bottom when the page loads, to show the welcome message
+        scrollToBottom();
+    </script>
+</body>
+</html>
