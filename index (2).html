@@ -1,188 +1,573 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom scrollbar for chat messages for better aesthetics */
-        .chat-messages::-webkit-scrollbar {
-            width: 8px;
-        }
-        .chat-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        /* Import Inter font from Google Fonts for a modern look */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="title" content="Akram Tools">
+  <meta name="description" content="Akram Tool Is A premium Tool TO Get Sim Owner Details. Trace any phone Number For Free.">
+  <meta name="keywords" content="Akram tools, Jazz Fresh data, pak sim owner details, Sim owner details, live tracker, Pak sim ga, db center, All sims data free">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Akram">
+  <title>Akram Tools</title>
+  <link rel="icon" href="https://placehold.co/32x32/00ffcc/000000?text=AT&font=inter">
+  <link href='https://use.fontawesome.com/releases/v5.7.2/css/all.css' rel='stylesheet'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #000;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 70px 20px 20px 20px; /* Adjusted top padding to accommodate fixed bar if it were active */
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1; /* Ensure particles are in the background */
+    }
+
+    /* Top Bar Styles (currently not in active HTML but kept for potential future use) */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      border-bottom: 3px solid #00ffcc;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+      z-index: 1000;
+    }
+
+    .profile {
+      position: relative;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(45deg, #00ffcc, #ff00cc);
+      border-radius: 50%;
+      margin-right: 10px;
+      border: 2px solid #00ffcc;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+    }
+
+    .username {
+      color: #00ffcc;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-shadow: 0 0 5px rgba(0, 255, 204, 0.8);
+    }
+
+    .dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      width: 200px;
+      padding: 10px 0;
+      display: none;
+      z-index: 1001;
+    }
+
+    .profile:hover .dropdown {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: block;
+      padding: 10px 20px;
+      color: #333;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .dropdown-item.username-display {
+      color: #333;
+      font-weight: bold;
+      border-bottom: 1px solid #eee;
+      pointer-events: none;
+    }
+
+    .dropdown-item.join-channel {
+      color: #666;
+    }
+
+    .dropdown-item.sign-out {
+      color: #ff0000;
+      display: flex;
+      align-items: center;
+    }
+
+    .dropdown-item.sign-out::before {
+      content: "←";
+      margin-right: 5px;
+      font-size: 1.2rem;
+    }
+
+    .dropdown-item:hover {
+      background: #f0f0f0;
+    }
+
+    .channel-link-btn {
+      background: #1e90ff;
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(30, 144, 255, 0.4);
+    }
+
+    .channel-link-btn:hover {
+      background: #00ffcc;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.8);
+      transform: scale(1.05);
+    }
+    /* End of Top Bar Styles */
+
+    /* Dashboard Container */
+    .dashboard-container {
+      background: rgba(0, 0, 0, 0.85);
+      border: 3px solid #00ffcc;
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 0 0 40px rgba(0, 255, 204, 0.6);
+      text-align: center;
+      max-width: 800px;
+      width: 100%;
+      animation: fadeIn 1.5s ease-in-out;
+      position: relative;
+      z-index: 1; /* Ensure dashboard is above particles */
+    }
+
+    .dashboard-container h1 {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #00ffcc, #ff00cc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px rgba(0, 255, 204, 0.8);
+      animation: glowText 2s infinite alternate;
+    }
+
+    .dashboard-container p {
+      font-size: 1.2rem;
+      color: #cccccc;
+      margin-bottom: 30px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    /* Notification Container (Kept from original, can be used for messages) */
+    .notification-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto 30px auto; /* Centered and with bottom margin */
+      z-index: 1;
+    }
+
+    .notification-box {
+      background: rgba(0, 0, 0, 0.85);
+      border: 4px solid #00ffcc;
+      border-radius: 15px;
+      padding: 15px 25px;
+      color: #cccccc;
+      font-size: 1.3rem;
+      line-height: 1.3;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+      transition: all 0.4s ease;
+      animation: fadeIn 1.5s ease-in-out;
+      text-align: center;
+    }
+
+    .notification-box:hover {
+      box-shadow: 0 0 25px #00ffcc, 0 0 60px #00ffcc;
+      transform: scale(1.03);
+    }
+
+    .notification-box span {
+      color: #ff0000; /* Example: for error emphasis */
+      font-weight: bold;
+    }
+
+    /* Login Form */
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px; /* Spacing between form elements */
+      max-width: 350px; /* Slightly wider for new button */
+      margin: 0 auto; /* Center the form */
+    }
+
+    .login-form input,
+    .login-form button,
+    .login-form a { /* Shared style for inputs, button, and links */
+      padding: 15px 25px;
+      background: #111;
+      border: 3px solid #00ffcc;
+      color: #00ffcc;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-radius: 12px;
+      width: 100%;
+      transition: all 0.4s ease;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+      animation: slideIn 0.8s forwards;
+      opacity: 0; /* Initial state for animation */
+      text-decoration: none; /* For <a> tags */
+      text-align: center; /* For <a> tags acting as buttons */
+      display: flex; /* For aligning icon and text in links */
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .login-form a i { /* Style for icons within form links */
+        margin-right: 8px;
+    }
+
+
+    /* Animation Delays for form elements */
+    .login-form input[name="userff"] { animation-delay: 0.3s; }
+    .login-form input[name="passff"] { animation-delay: 0.4s; }
+    .login-form button[type="submit"] { animation-delay: 0.5s; }
+    .login-form a.create-account-link { animation-delay: 0.6s; } /* Create Account link */
+    .login-form a.gmail-login-link { animation-delay: 0.7s; } /* Gmail Login link */
+
+
+    .login-form input:hover,
+    .login-form input:focus,
+    .login-form button:hover,
+    .login-form a:hover {
+      background: #00ffcc;
+      color: #000;
+      box-shadow: 0 0 20px #00ffcc, 0 0 50px #00ffcc;
+      transform: scale(1.05); /* Adjusted scale for better visual */
+      outline: none; /* For inputs */
+    }
+    .login-form button:hover, .login-form a:hover {
+        transform: scale(1.05) rotate(1deg); /* Slight rotate on hover for buttons/links */
+    }
+
+
+    /* Alert Messages (Kept from original) */
+    .alert {
+      background: rgba(0, 0, 0, 0.85);
+      border: 3px solid #00ffcc;
+      border-radius: 12px;
+      padding: 15px 25px;
+      color: #cccccc;
+      font-size: 1.3rem;
+      line-height: 1.3;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .alert-success { color: #00ff00; }
+    .alert-danger { color: #ff0000; }
+    .alert-info { color: #00ccff; }
+
+    /* Footer Links Section (for WhatsApp Channel, etc.) */
+    .footer-links-section {
+      margin-top: 30px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center items if they don't take full width */
+      gap: 20px;
+    }
+
+    .footer-links-section a {
+      padding: 15px 30px;
+      background: #111;
+      border: 3px solid #00ffcc;
+      color: #00ffcc;
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 12px;
+      max-width: 350px; /* Max width for these links */
+      width: auto; /* Adjust width based on content */
+      min-width: 300px; /* Minimum width */
+      transition: all 0.4s ease;
+      animation: slideIn 0.8s forwards;
+      opacity: 0;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+      display: inline-flex; /* For icon and text alignment */
+      align-items: center;
+      justify-content: center;
+    }
+     .footer-links-section a i {
+        margin-right: 8px;
+     }
+
+    .footer-links-section a:nth-child(1) { animation-delay: 0.8s; } /* Animation for WhatsApp Channel link */
+
+    .footer-links-section a:hover {
+      background: #00ffcc;
+      color: #000;
+      box-shadow: 0 0 20px #00ffcc, 0 0 50px #00ffcc;
+      transform: scale(1.05) rotate(1deg);
+    }
+
+    /* Social Media Links */
+    .social-links {
+      margin-top: 30px; /* Increased margin for better spacing */
+      display: flex;
+      justify-content: center;
+      gap: 25px; /* Increased gap */
+    }
+
+    .social-links a {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+      border: 3px solid #00ffcc;
+      border-radius: 50%;
+      color: #00ffcc;
+      font-size: 1.8rem; /* Slightly larger icons */
+      text-decoration: none;
+      transition: all 0.4s ease;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+      animation: slideIn 0.8s forwards;
+      opacity: 0;
+    }
+
+    /* Animation delays for social icons */
+    .social-links a:nth-child(1) { animation-delay: 0.9s; } /* WhatsApp Direct */
+    .social-links a:nth-child(2) { animation-delay: 1.0s; } /* YouTube */
+    .social-links a:nth-child(3) { animation-delay: 1.1s; } /* Facebook */
+
+    .social-links a:hover {
+      background: #00ffcc;
+      color: #000;
+      box-shadow: 0 0 20px #00ffcc, 0 0 50px #00ffcc;
+      transform: scale(1.15); /* Slightly more pronounced hover effect */
+    }
+
+    /* Keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-60px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes glowText {
+      from { text-shadow: 0 0 15px rgba(0, 255, 204, 0.8); }
+      to { text-shadow: 0 0 30px rgba(255, 0, 204, 0.8), 0 0 5px rgba(0, 255, 204, 0.5); } /* Added subtle extra glow */
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        padding: 30px 20px; /* Adjusted padding */
+        max-width: 90%;
+      }
+      .dashboard-container h1 { font-size: 2.8rem; } /* Adjusted font size */
+      .dashboard-container p { font-size: 1.1rem; }
+
+      .notification-container { max-width: 90%; gap: 15px; }
+      .notification-box { font-size: 1.1rem; padding: 12px 20px; }
+
+      .login-form { max-width: 300px; }
+      .login-form input,
+      .login-form button,
+      .login-form a,
+      .footer-links-section a {
+        font-size: 1.1rem;
+        padding: 12px 20px;
+        min-width: auto; /* Allow flexible width */
+        max-width: 300px;
+      }
+
+      .social-links a { width: 50px; height: 50px; font-size: 1.5rem; }
+      .top-bar { padding: 8px 15px; }
+      .avatar { width: 35px; height: 35px; }
+      .username { font-size: 1rem; }
+      .dropdown { width: 180px; }
+      .channel-link-btn { padding: 6px 12px; font-size: 0.9rem; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 60px 15px 15px 15px; }
+      .dashboard-container { padding: 20px 15px; }
+      .dashboard-container h1 { font-size: 2.2rem; }
+      .dashboard-container p { font-size: 1rem; }
+
+      .notification-container { max-width: 95%; gap: 10px; }
+      .notification-box { font-size: 1rem; padding: 10px 15px; border-width: 3px; }
+      
+      .login-form { max-width: 90%; }
+      .login-form input,
+      .login-form button,
+      .login-form a,
+      .footer-links-section a {
+        font-size: 1rem;
+        padding: 12px 18px; /* Adjusted padding */
+      }
+      .footer-links-section a {
+        min-width: 250px;
+      }
+
+
+      .social-links { gap: 15px; }
+      .social-links a { width: 45px; height: 45px; font-size: 1.3rem; }
+      
+      .top-bar { padding: 6px 10px; }
+      .avatar { width: 30px; height: 30px; }
+      .username { font-size: 0.9rem; }
+      .dropdown { width: 160px; }
+      .channel-link-btn { padding: 5px 10px; font-size: 0.8rem; }
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl flex flex-col h-[90vh] overflow-hidden">
-        <div class="bg-indigo-600 text-white p-4 rounded-t-2xl shadow-md flex justify-between items-center">
-            <h1 class="text-2xl font-bold">AI Chatbot</h1>
-            <span class="text-sm font-medium">AI chat bot made by AKRAM KHAN</span>
-        </div>
+<body>
 
-        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4 chat-messages">
-            <div class="flex justify-start">
-                <div class="bg-gray-200 text-gray-800 p-3 rounded-xl max-w-[80%] shadow-sm">
-                    Hello! How can I help you today?
-                </div>
-            </div>
-        </div>
+ <div id="particles-js"></div> <div class="dashboard-container">
+    <h1>Akram Tools</h1> <p>Developed by Akram</p> <form class="login-form" method="POST" action="#">
+      <input type="text" name="userff" id="userName" placeholder="Enter Your Username" required>
+      <input type="password" name="passff" id="pwd" placeholder="Enter Your Password" required>
+      <button type="submit" name="btn">Login Now</button>
+      <a href="#" class="create-account-link">Create Your Account</a>
+      <a href="#" class="gmail-login-link">
+        <i class="fab fa-google"></i>Login with Gmail
+      </a>
+    </form>
 
-        <div class="p-4 border-t border-gray-200 bg-gray-50 flex items-center gap-3">
-            <input
-                type="text"
-                id="user-input"
-                placeholder="Type your message..."
-                class="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200"
-            />
-            <button
-                id="send-button"
-                class="bg-indigo-600 text-white p-3 rounded-xl shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200 flex items-center justify-center"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-            </button>
-        </div>
+    <div class="social-links">
+      <a href="https://wa.me/923001881920" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://www.youtube.com/@ONLYGAMING-y3p3e" target="_blank" rel="noopener noreferrer" aria-label="YouTube Channel"><i class="fab fa-youtube"></i></a>
+      <a href="https://www.facebook.com/profile.php?id=100076276897630" target="_blank" rel="noopener noreferrer" aria-label="Facebook Profile"><i class="fab fa-facebook"></i></a>
     </div>
 
-    <script type="module">
-        // Get references to the chat messages container, user input field, and send button
-        const chatMessages = document.getElementById('chat-messages');
-        const userInput = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
+    <div class="footer-links-section">
+        <a href="https://whatsapp.com/channel/0029Vb6FbptA2pLGDQ3kfu06" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-whatsapp"></i>Follow  on WhatsApp
+        </a>
+    </div>
 
-        // Function to scroll the chat messages to the very bottom
-        function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+  </div> <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 80, // Number of particles
+          "density": {
+            "enable": true,
+            "value_area": 800 // Area where particles are distributed
+          }
+        },
+        "color": {
+          "value": "#00ffcc" // Particle color
+        },
+        "shape": {
+          "type": "circle", // Shape of particles (circle, edge, triangle, polygon, star, image)
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          }
+        },
+        "opacity": {
+          "value": 0.6, // Base opacity of particles
+          "random": true, // Random opacity
+          "anim": {
+            "enable": true,
+            "speed": 0.8, // Speed of opacity animation
+            "opacity_min": 0.15, // Minimum opacity
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 3.5, // Base size of particles
+          "random": true, // Random size
+          "anim": {
+            "enable": false, // Disable size animation for a cleaner look
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 160, // Max distance for linking lines
+          "color": "#00ffcc",
+          "opacity": 0.45, // Opacity of lines
+          "width": 1.2 // Width of lines
+        },
+        "move": {
+          "enable": true,
+          "speed": 1.5, // Speed of particle movement
+          "direction": "none", // Direction of movement (none, top, top-right, etc.)
+          "random": true, // Random direction
+          "straight": false, // Particles move in straight lines or not
+          "out_mode": "out", // Behavior when particles move out of canvas (out, bounce)
+          "bounce": false // Enable bouncing between particles
         }
-
-        // Function to add a new message bubble to the chat display
-        function addMessage(sender, message) {
-            const messageDiv = document.createElement('div');
-            // Apply flex classes to align messages based on sender (user on right, bot on left)
-            messageDiv.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start');
-
-            const messageBubble = document.createElement('div');
-            // Apply styling for message bubbles, different colors for user and bot
-            messageBubble.classList.add(
-                'p-3',
-                'rounded-xl',
-                'max-w-[80%]', // Limit message width for readability
-                'shadow-sm',
-                sender === 'user' ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-800'
-            );
-            messageBubble.textContent = message; // Set the message text
-            messageDiv.appendChild(messageBubble); // Add the bubble to the message div
-            chatMessages.appendChild(messageDiv); // Add the message div to the chat container
-            scrollToBottom(); // Scroll to the latest message
-        }
-
-        // Function to show a "Bot is typing..." indicator
-        function showBotTyping() {
-            const typingDiv = document.createElement('div');
-            typingDiv.id = 'bot-typing-indicator'; // Assign an ID to easily remove it later
-            typingDiv.classList.add('flex', 'justify-start');
-            typingDiv.innerHTML = `
-                <div class="bg-gray-200 text-gray-800 p-3 rounded-xl max-w-[80%] shadow-sm animate-pulse">
-                    Bot is typing...
-                </div>
-            `;
-            chatMessages.appendChild(typingDiv); // Add the typing indicator to the chat
-            scrollToBottom(); // Scroll to show the indicator
-        }
-
-        // Function to hide the "Bot is typing..." indicator
-        function hideBotTyping() {
-            const typingDiv = document.getElementById('bot-typing-indicator');
-            if (typingDiv) {
-                typingDiv.remove(); // Remove the typing indicator from the DOM
+      },
+      "interactivity": {
+        "detect_on": "canvas", // "canvas" or "window"
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse" // "grab", "bubble", "repulse"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push" // "push", "remove", "bubble"
+          },
+          "resize": true // Resize particles animation on window resize
+        },
+        "modes": { // Configuration for interactivity modes
+            "repulse": {
+                "distance": 100, // Distance of repulsion
+                "duration": 0.4
+            },
+            "push": {
+                "particles_nb": 4 // Number of particles pushed
             }
         }
-
-        // Function to get a response from the chatbot
-        async function getBotResponse(userMessage) {
-            showBotTyping(); // Show typing indicator while waiting for response
-
-            // Prepare the chat history for the API call
-            // For this simplified example, we only send the current user message.
-            // In a full implementation, you'd maintain a history of past turns.
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
-
-            // Define the payload for the Gemini API request
-            const payload = { contents: chatHistory };
-            // API key is left empty; Canvas will inject it at runtime for allowed models.
-            const apiKey = "";
-            // The API endpoint for Gemini 2.0 Flash model
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-            try {
-                // Make a POST request to the Gemini API
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                // Parse the JSON response
-                const result = await response.json();
-
-                // Check if the response contains valid content
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const botResponseText = result.candidates[0].content.parts[0].text;
-                    hideBotTyping(); // Hide typing indicator
-                    addMessage('bot', botResponseText); // Display bot's response
-                } else {
-                    // Handle cases where the response structure is unexpected or content is missing
-                    hideBotTyping();
-                    addMessage('bot', "I'm sorry, I couldn't generate a response. Please try again.");
-                    console.error('Unexpected API response structure:', result);
-                }
-            } catch (error) {
-                // Handle network errors or other exceptions
-                hideBotTyping();
-                addMessage('bot', "An error occurred while connecting to the AI. Please try again.");
-                console.error('Error fetching bot response:', error);
-            }
-        }
-
-        // Event listener for the send button click
-        sendButton.addEventListener('click', () => {
-            const message = userInput.value.trim(); // Get user input and remove leading/trailing whitespace
-            if (message) { // Only send if the message is not empty
-                addMessage('user', message); // Display user's message
-                getBotResponse(message); // Get bot's response
-                userInput.value = ''; // Clear the input field after sending
-            }
-        });
-
-        // Event listener for the Enter key press in the input field
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') { // If the pressed key is 'Enter'
-                sendButton.click(); // Programmatically click the send button
-            }
-        });
-
-        // Initial scroll to bottom when the page loads, to show the welcome message
-        scrollToBottom();
-    </script>
+      },
+      "retina_detect": true // Enable retina display support
+    });
+  </script>
 </body>
 </html>
+
